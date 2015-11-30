@@ -1,0 +1,43 @@
+global
+    log 127.0.0.1   syslog info
+    daemon
+    user vcap
+    group vcap
+    maxconn 64000
+    spread-checks 4
+    tune.bufsize 16384
+
+defaults
+    log global
+    timeout connect 30000ms
+    maxconn 64000
+    timeout client 900000ms
+    timeout server 900000ms
+
+<% p("routing.haproxy.http_mappings").each do |mapping| %>
+frontend frontend-http-<%= mapping["name"] %>
+    mode http
+    bind :<%= mapping["frontend_port"] %>
+    default_backend backend-http-<%= mapping["name"] %>
+
+backend backend-http-<%= mapping["name"] %>
+    mode http
+    balance roundrobin
+    <% mapping["backend_server_addresses"].each_with_index do |server, index| %>
+    server node<%= index %> <%= server["ip"] %>:<%= server["port"] %> check inter 1000
+    <% end %>
+<% end %>
+
+<% p("routing.haproxy.tcp_mappings").each do |mapping| %>
+frontend frontend-tcp-<%= mapping["name"] %>
+    mode tcp
+    bind :<%= mapping["frontend_port"] %>
+    default_backend backend-tcp-<%= mapping["name"] %>
+
+backend backend-tcp-<%= mapping["name"] %>
+    mode tcp
+    balance roundrobin
+    <% mapping["backend_server_addresses"].each_with_index do |server, index| %>
+    server node<%= index %> <%= server["ip"] %>:<%= server["port"] %> check inter 1000
+    <% end %>
+<% end %>

@@ -1,0 +1,34 @@
+---
+name: haproxy
+
+description: "HAProxy bills itself as 'The Reliable, High Performance TCP/HTTP Load Balancer.' See: http://www.haproxy.org/"
+
+packages:
+- routing-common
+- haproxy
+
+templates:
+  haproxy.conf.erb: "config/haproxy.conf"
+  haproxy_ctl: "bin/haproxy_ctl"
+
+properties:
+  routing.haproxy.http_mappings:
+    description: |
+      A list of uniquely named mappings from frontend ports to arrays of backend
+      server IPs and ports for HTTP load balancing
+    example:
+      - name: sample-ui
+        frontend_port: 80
+        backend_server_addresses:
+          - ip: 10.244.6.2
+            port: 30080
+  routing.haproxy.tcp_mappings:
+    description: |
+      A list of uniquely named mappings from frontend ports to arrays of backend
+      server IPs and ports for TCP load balancing
+    example:
+      - name: master-api
+        frontend_port: 443
+        backend_server_addresses:
+          - ip: 10.244.5.2
+            port: 443

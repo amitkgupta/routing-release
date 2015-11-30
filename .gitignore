@@ -1,0 +1,22 @@
+# Mac OS X
+.DS_Store
+
+# Hidden BOSH directories
+.blobs/
+.dev_builds/
+.final_builds/jobs/**/*.tgz
+.final_builds/packages/**/*.tgz
+
+# Large BOSH artifacts
+blobs/
+dev_releases/
+releases/*.tgz
+releases/**/*.tgz
+
+# Private BOSH credentials
+config/dev.yml
+config/private.yml
+
+# $GOPATH artifacts
+/bin/
+/pkg/
